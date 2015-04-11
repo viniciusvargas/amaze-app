@@ -24,18 +24,28 @@ public class MainActivity extends Activity implements BeaconConsumer{
     protected static final String TAG = "RangingActivity";
     private BeaconManager beaconManager;
 
+    private void startBeaconSearch() {
+        beaconManager = BeaconManager.getInstanceForApplication(this);
+        //beaconManager.setForegroundBetweenScanPeriod(2000);
+        beaconManager.bind(this);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         setContentView(R.layout.activity_main);
-        beaconManager = BeaconManager.getInstanceForApplication(this);
-        beaconManager.bind(this);
+        startBeaconSearch();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        beaconManager.unbind(this);
+        //beaconManager.unbind(this);
     }
     @Override
     public void onBeaconServiceConnect() {
@@ -65,7 +75,7 @@ public class MainActivity extends Activity implements BeaconConsumer{
 
                 Intent intent = new Intent(MainActivity.this, BeaconDetails.class);
                 intent.putExtra("beacon", closestBeacon);
-                MainActivity.this.beaconManager.setRangeNotifier(null);
+                MainActivity.this.beaconManager.unbind(MainActivity.this);
                 MainActivity.this.startActivity(intent);
 
             }

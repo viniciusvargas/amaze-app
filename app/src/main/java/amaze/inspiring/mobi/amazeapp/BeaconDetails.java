@@ -1,12 +1,16 @@
 package amaze.inspiring.mobi.amazeapp;
 
 import android.app.ProgressDialog;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -24,6 +28,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +38,7 @@ import java.util.List;
 public class BeaconDetails extends ActionBarActivity {
 
     protected static final String TAG = "BeaconDetails";
-    private static final String serviceUrl = "http://192.168.94.201:8080/amaze-mobile-api/restapi/beacon/identify";
+    private static final String serviceUrl = "http://192.168.1.7:8080/amaze-mobile-api/restapi/beacon/identify";
     private Beacon beacon = null;
     private ProgressBar mProgressBar;
     private String jsonResponse = null;
@@ -83,6 +90,31 @@ public class BeaconDetails extends ActionBarActivity {
         }
     }
 
+    public void renderJSONResponseToActivity(JSONObject jsonResponse) {
+        try {
+            JSONObject beaconDetails = jsonResponse.getJSONObject("beaconDetails");
+            if (beaconDetails != null) {
+                String beaconDetailsText = beaconDetails.getString("text");
+                try {
+                    beaconDetailsText = new String(beaconDetailsText.getBytes("ISO-8859-1"),  "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    Log.e(TAG, "Could not encode the beacon text in method renderJSONResponseToActivity");
+                }
+
+                String imageURL = beaconDetails.getString("imageUrl");
+                TextView mBeaconText = (TextView) this.findViewById(R.id.mBeaconDetailsText);
+                mBeaconText.setText(beaconDetailsText);
+
+                new DownloadImageTask((ImageView) this.findViewById(R.id.mBeaconDetailImageView))
+                        .execute(imageURL);
+
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error reading JSONResponse in method renderJSONResponseToActivity");
+        }
+
+    }
+
 
     private String getBeaconDataRequest() {
         Bundle extras = getIntent().getExtras();
@@ -117,9 +149,11 @@ public class BeaconDetails extends ActionBarActivity {
             String text = null;
             try {
                 jsonObject = new JSONObject(jsonResponse);
-                text = jsonObject.getString("text");
+                if (jsonResponse != null) {
+                    renderJSONResponseToActivity(jsonObject);
+                }
             } catch (JSONException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error executing onPostExecute.");
             }
 
         }
@@ -129,6 +163,30 @@ public class BeaconDetails extends ActionBarActivity {
         }
     }
 
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
+    }
 
 }
 
