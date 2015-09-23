@@ -6,10 +6,12 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="amaze.inspiring.mobi.amazeapp.MainActivity">
 
-    <TextView android:text="SEARCHING BEACONS..." android:layout_width="wrap_content"
+    <TextView android:text="FINDING NEAREST BEACON..." android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/textView" />
+        android:id="@+id/textView"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

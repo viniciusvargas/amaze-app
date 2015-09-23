@@ -1,8 +1,17 @@
 <resources>
-    <string name="app_name">AmazeApp</string>
+    <string name="app_name">Zoone</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_beacon_details">BeaconDetails</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_beacon_details">Zoone</string>
+    <string name="title_activity_main">Zoone</string>
+    <string name="title_activity_login">Zoone</string>
+    <string name="title_activity_home">Zoone</string>
+    <string name="facebook_app_id">Bmce+9aHdOoVtE7fS3B07tfj7Bc=</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_profile">ProfileActivity</string>
+    <string name="title_activity_nearby_beacons_list_view">NearbyBeaconsListView</string>
+    <string name="title_activity_bookmarked_beacons_list_view">BookmarkedBeaconsListView</string>
 </resources>
